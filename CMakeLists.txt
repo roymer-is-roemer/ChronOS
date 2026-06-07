@@ -43,5 +43,6 @@ target_include_directories(imgui PUBLIC
 target_link_libraries(imgui PUBLIC glfw OpenGL::GL)
 
 add_executable(OSMockup src/main.cpp)
+add_subdirectory(src)
 
 target_link_libraries(OSMockup PRIVATE imgui)
