@@ -1,5 +1,5 @@
 #include "image.hpp"
-#include <OpenGL/gl.h>
+#include <GLFW/glfw3.h>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
