@@ -2,13 +2,10 @@
 
 #include <cstdint>
 #include <ctime>
-#include <iostream>
 
 #include "imgui.h"
 
-DesktopBackground::DesktopBackground() : image("/Users/rek/Coding/ChronOS/test_output.oif") {
-	std::cout << "Image texture ID: " << image.gl_texture_id << std::endl;
-}
+DesktopBackground::DesktopBackground() : image("test_output.oif") {}
 
 void DesktopBackground::render() {
 	auto viewport = ImGui::GetMainViewport();

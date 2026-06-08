@@ -18,9 +18,7 @@ Image::Image(std::string filename) {
 	fread(&height, sizeof(height), 1, fp);
 	
 	this->bitmap = (unsigned char*)malloc(width * height * 3);
-	std::cout << "Allocating " <<  width * height * 3 << " bytes" << std::endl;
 	fread(this->bitmap, height * width * 3, 1, fp);
-	std::cout << "Read " << ftell(fp) << " bytes" << std::endl;
 	fclose(fp);
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
