@@ -18,8 +18,12 @@ Image::Image(std::string filename) {
 	fread(&height, sizeof(height), 1, fp);
 	
 	this->bitmap = (unsigned char*)malloc(width * height * 3);
-	fread(this->bitmap, height, width, fp);
+	std::cout << "Allocating " <<  width * height * 3 << " bytes" << std::endl;
+	fread(this->bitmap, height * width * 3, 1, fp);
+	std::cout << "Read " << ftell(fp) << " bytes" << std::endl;
+	fclose(fp);
 
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &this->gl_texture_id);
 	glBindTexture(GL_TEXTURE_2D, this->gl_texture_id);
 

@@ -6,8 +6,8 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include "window/desktop_background.hpp"
 #include "window/taskbar.hpp"
-#include "image.hpp"
 
 int main()
 {
@@ -16,8 +16,8 @@ int main()
 	OSWindow window;
 
 	Taskbar taskbar;
+	DesktopBackground desktop_background;
 
-	Image image("/Users/rek/Coding/ChronOS/test_output.oif");
 
     while (!glfwWindowShouldClose(window.window))
     {
@@ -32,18 +32,15 @@ int main()
         ImVec2 screen_pos = ImGui::GetMainViewport()->Pos;
         ImVec2 screen_size = ImGui::GetMainViewport()->Size;
 
-        ImU32 color_top_left = ImGui::ColorConvertFloat4ToU32(ImVec4(0.1f, 0.2f, 0.3f, 1.0f));  // Dark Blue
-        ImU32 color_bot_right = ImGui::ColorConvertFloat4ToU32(ImVec4(0.2f, 0.1f, 0.2f, 1.0f)); // Dark Purple
+        // ImU32 color_top_left = ImGui::ColorConvertFloat4ToU32(ImVec4(0.1f, 0.2f, 0.3f, 1.0f));  // Dark Blue
+        // ImU32 color_bot_right = ImGui::ColorConvertFloat4ToU32(ImVec4(0.2f, 0.1f, 0.2f, 1.0f)); // Dark Purple
 
-        bg_draw_list->AddRectFilledMultiColor(
-            screen_pos,
-            ImVec2(screen_pos.x + screen_size.x, screen_pos.y + screen_size.y),
-            color_top_left, color_top_left, color_bot_right, color_bot_right);
+        // bg_draw_list->AddRectFilledMultiColor(
+        //     screen_pos,
+        //     ImVec2(screen_pos.x + screen_size.x, screen_pos.y + screen_size.y),
+        //     color_top_left, color_top_left, color_bot_right, color_bot_right);
 
-		auto sz = ImVec2(251, 80);
-		ImGui::Image((ImTextureID)(intptr_t)image.gl_texture_id, ImVec2(image.width, image.height));
-
-        // Taskbar
+		desktop_background.render();
 		taskbar.render();
 
         ImGui::Render();
