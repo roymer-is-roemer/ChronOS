@@ -15,7 +15,11 @@ int main()
     //(void)io;
 	OSWindow window;
 
-	Taskbar taskbar;
+	Taskbar taskbar([&window]() {
+        glfwSetWindowShouldClose(window.window, GLFW_TRUE);
+    });
+
+
 	DesktopBackground desktop_background;
 
 

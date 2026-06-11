@@ -2,12 +2,13 @@
 #include "window.hpp"
 #include <ctime>
 
-Taskbar::Taskbar()
-	: Window("Taskbar",
-			 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
-				 ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
-				 ImGuiWindowFlags_NoSavedSettings |
-				 ImGuiWindowFlags_NoScrollbar) {}
+Taskbar::Taskbar(std::function<void()> onPowerClick)
+    : Window("Taskbar",
+             ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
+                 ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+                 ImGuiWindowFlags_NoSavedSettings |
+                 ImGuiWindowFlags_NoScrollbar),
+      m_onPowerClick(std::move(onPowerClick)) {}
 
 std::string GetCurrentTimeString() {
 	std::time_t t = std::time(nullptr);
@@ -43,9 +44,48 @@ void Taskbar::draw() {
 	float window_width = ImGui::GetWindowSize().x;
 
 	ImGui::SameLine();
-	ImGui::SetCursorPosX(window_width - text_width - 15.0f);
+	ImGui::SetCursorPosX(window_width - text_width - 60.0f);
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4.0f);
 	ImGui::Text("%s", timeStr.c_str());
+
+	ImGui::SameLine();
+	ImGui::SetCursorPosX(window_width - 26.0f - 15.0f);
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.0f);
+    ImGui::PushStyleColor(ImGuiCol_Button,        ImVec4(0.6f, 0.1f, 0.1f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive,  ImVec4(1.0f, 0.3f, 0.3f, 1.0f));
+    if (ImGui::Button("(|)", ImVec2(26.0f, 24))){
+        m_showPowerConfirm = true;
+        ImGui::OpenPopup("Confirm Shutdown");
+    }
+    ImGui::PopStyleColor(3);
+
+    ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+    ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+    if (ImGui::BeginPopupModal("Confirm Shutdown", &m_showPowerConfirm,
+                                ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove)) {
+        ImGui::Text("Are you sure you want to shut down?");
+        ImGui::Spacing();
+
+        float buttonWidth = 80.0f;
+        float spacing = 10.0f;
+        float totalWidth = buttonWidth * 2 + spacing;
+        ImGui::SetCursorPosX((ImGui::GetWindowWidth() - totalWidth) * 0.5f);
+
+        if (ImGui::Button("Shut Down", ImVec2(buttonWidth, 0))) {
+            ImGui::CloseCurrentPopup();
+            m_showPowerConfirm = false;
+            if (m_onPowerClick) m_onPowerClick();
+        }
+        ImGui::SameLine(0.0f, spacing);
+        if (ImGui::Button("Cancel", ImVec2(buttonWidth, 0))) {
+            ImGui::CloseCurrentPopup();
+            m_showPowerConfirm = false;
+        }
+
+        ImGui::EndPopup();
+    }
 }
 
 ImVec2 Taskbar::position() {

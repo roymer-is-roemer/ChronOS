@@ -3,9 +3,12 @@
 
 class OSWindow {
 private:
-	
 public:
-	GLFWwindow* window;
-	OSWindow();
-	~OSWindow();
+    GLFWwindow* window;
+
+    OSWindow();
+    ~OSWindow();
+
+    OSWindow(const OSWindow&) = delete;
+    OSWindow& operator=(const OSWindow&) = delete;
 };
