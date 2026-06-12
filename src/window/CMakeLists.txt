@@ -8,3 +8,5 @@ target_sources(OSMockup PRIVATE
 target_include_directories(OSMockup PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
+
+target_compile_definitions(imgui PUBLIC IMGUI_USE_WCHAR32)
