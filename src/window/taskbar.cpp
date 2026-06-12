@@ -35,6 +35,10 @@ void Taskbar::draw() {
 	ImGui::SameLine();
 
 	if (ImGui::Button("󱊣 Power Manager", ImVec2(0, buttonHeight))) {
+		if (!m_powerManager) {
+			m_powerManager = std::make_unique<PowerManager>();
+		}
+		m_powerManager->open();
 	}
 	ImGui::SameLine();
 
@@ -100,6 +104,10 @@ void Taskbar::draw() {
 
 	if (m_taskManager) {
 		m_taskManager->draw();
+	}
+
+	if (m_powerManager) {
+		m_powerManager->draw();
 	}
 }
 
