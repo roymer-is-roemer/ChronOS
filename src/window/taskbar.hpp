@@ -2,6 +2,7 @@
 
 #include "window.hpp"
 #include <functional>
+#include <memory>
 #include "task_manager.hpp"
 
 class Taskbar : public Window {
