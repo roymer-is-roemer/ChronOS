@@ -22,17 +22,30 @@ std::string GetCurrentTimeString() {
 }
 
 void Taskbar::draw() {
-	constexpr int buttonHeight = 24;
+	constexpr float buttonHeight = 24.0f;
+	constexpr float buttonGap = 8.0f;
+	constexpr float edgePadding = 15.0f;
+	constexpr float powerButtonWidth = 26.0f;
+
+	const float windowWidth = ImGui::GetWindowSize().x;
+	const float windowHeight = ImGui::GetWindowSize().y;
+
+	// Vertical center for taskbar items
+	const float rowTop = (windowHeight - buttonHeight) * 0.5f;
+
+	// Vertical center for text in button
+	const float textTop =
+		rowTop + (buttonHeight - ImGui::GetTextLineHeight()) * 0.5f;
+
+	ImGui::SetCursorPosY(rowTop);
 
 	if (ImGui::Button(" Start", ImVec2(60, buttonHeight))) {
 	}
-	ImGui::SameLine();
-	ImGui::Dummy(ImVec2(10.0f, 0.0f));
-	ImGui::SameLine();
+	ImGui::SameLine(0.0f, buttonGap);
 
 	if (ImGui::Button(" Mail", ImVec2(0, buttonHeight))) { // 0 = fit width
 	}
-	ImGui::SameLine();
+	ImGui::SameLine(0.0f, buttonGap);
 
 	if (ImGui::Button("󱊣 Power Manager", ImVec2(0, buttonHeight))) {
 		if (!m_powerManager) {
@@ -40,7 +53,7 @@ void Taskbar::draw() {
 		}
 		m_powerManager->open();
 	}
-	ImGui::SameLine();
+	ImGui::SameLine(0.0f, buttonGap);
 
 	if (ImGui::Button(" Task Manager", ImVec2(0, buttonHeight))) {
 		if (!m_taskManager) {
@@ -48,26 +61,27 @@ void Taskbar::draw() {
 		}
 		m_taskManager->open();
 	}
-	ImGui::SameLine();
+
+	// Power button pinned to the right with clock to its left
+	const float powerButtonX = windowWidth - powerButtonWidth - edgePadding;
 
 	std::string timeStr = GetCurrentTimeString();
-	float text_width = ImGui::CalcTextSize(timeStr.c_str()).x;
-	float window_width = ImGui::GetWindowSize().x;
+	float textWidth = ImGui::CalcTextSize(timeStr.c_str()).x;
 
 	ImGui::SameLine();
-	ImGui::SetCursorPosX(window_width - text_width - 60.0f);
-	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4.0f);
+	ImGui::SetCursorPosX(powerButtonX - textWidth - edgePadding);
+	ImGui::SetCursorPosY(textTop);
 	ImGui::Text("%s", timeStr.c_str());
 
 	ImGui::SameLine();
-	ImGui::SetCursorPosX(window_width - 26.0f - 15.0f);
-	ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.0f);
+	ImGui::SetCursorPosX(powerButtonX);
+	ImGui::SetCursorPosY(rowTop);
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.6f, 0.1f, 0.1f, 1.0f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
 						  ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive,
 						  ImVec4(1.0f, 0.3f, 0.3f, 1.0f));
-	if (ImGui::Button("(|)", ImVec2(26.0f, 24))) {
+	if (ImGui::Button("󰐥", ImVec2(26.0f, 24))) {
 		m_showPowerConfirm = true;
 		ImGui::OpenPopup("Confirm Shutdown");
 	}
