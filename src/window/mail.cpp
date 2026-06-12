@@ -1,5 +1,6 @@
 #include "mail.hpp"
 #include <cstring>
+#include <iterator>
 
 namespace {
 
@@ -46,19 +47,8 @@ const Folder kFolders[] = {
 	{kIconFolderTrash, "Trash", 0, 0, 0, 1},
 };
 
-struct Message {
-	const char *subject;
-	const char *from; // display name shown in the list
-	const char *date; // short date shown in the list
-	const char *size;
-	bool unread;
-	const char *fromAddr; // full From: header in the preview
-	const char *to;		  // To: header in the preview
-	const char *dateFull; // Date: header in the preview
-	const char *body;	  // message body shown in the preview
-};
-
-const Message kMessages[] = {
+// Default inbox contents used to seed Mail::m_messages
+const Message kDefaultMessages[] = {
 	{"Friendly Reminder: Your Library Items Are Due Soon!", "library",
 	 "06/07/2026(Sun) 3:01", "2.79KB", false, "library <library@dlsu.edu.ph>",
 	 "Justin Rainier Go <justin_rainier_go@dlsu.edu.ph>",
@@ -266,8 +256,9 @@ void ToolbarSeparator() {
 
 Mail::Mail()
 	: Window("Chron Mail (CMail)", ImGuiWindowFlags_NoCollapse |
-							   ImGuiWindowFlags_NoSavedSettings |
-							   ImGuiWindowFlags_MenuBar) {}
+								   ImGuiWindowFlags_NoSavedSettings |
+								   ImGuiWindowFlags_MenuBar),
+	  m_messages(std::begin(kDefaultMessages), std::end(kDefaultMessages)) {}
 
 void Mail::drawMenuBar() {
 	if (!ImGui::BeginMenuBar())
@@ -428,8 +419,8 @@ void Mail::drawMessageList() {
 								60.0f);
 		ImGui::TableHeadersRow();
 
-		for (int i = 0; i < IM_ARRAYSIZE(kMessages); ++i) {
-			const Message &m = kMessages[i];
+		for (int i = 0; i < (int)m_messages.size(); ++i) {
+			const Message &m = m_messages[i];
 			ImGui::TableNextRow();
 
 			ImGui::TableSetColumnIndex(0);
@@ -457,7 +448,7 @@ void Mail::drawMessageList() {
 }
 
 void Mail::drawPreviewPane() {
-	const Message &m = kMessages[m_selectedMessage];
+	const Message &m = m_messages[m_selectedMessage];
 
 	ImGui::BeginChild("##preview", ImVec2(0.0f, 0.0f), true);
 
@@ -530,14 +521,14 @@ void Mail::draw() {
 	ImGui::EndChild();
 
 	// Quick-search / selection status row.
-	int total = IM_ARRAYSIZE(kMessages);
+	int total = (int)m_messages.size();
 	int unread = 0;
-	for (const Message &msg : kMessages)
+	for (const Message &msg : m_messages)
 		unread += msg.unread ? 1 : 0;
 
 	ImGui::TextDisabled("%s %s", kIconInbox, kFolders[m_selectedFolder].name);
 	ImGui::SameLine();
-	ImGui::Text("1 item selected (%s)", kMessages[m_selectedMessage].size);
+	ImGui::Text("1 item selected (%s)", m_messages[m_selectedMessage].size);
 	ImGui::SameLine();
 	char counts[64];
 	std::snprintf(counts, sizeof(counts), "0 new, %d unread, %d total", unread,
