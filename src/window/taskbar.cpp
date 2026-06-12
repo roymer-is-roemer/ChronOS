@@ -5,10 +5,9 @@
 namespace {
 
 // --- Nerd Font glyphs ---
-constexpr const char *kIconStart = "";			  // start menu
-constexpr const char *kIconMail = "";			  // envelope
+constexpr const char *kIconMail = "";			  // envelope
 constexpr const char *kIconPowerManager = "󱊣"; // power plug
-constexpr const char *kIconTaskManager = "";	  // gauge
+constexpr const char *kIconTaskManager = "";	  // gauge
 constexpr const char *kIconPower = "󰐥";		  // power button
 
 // Compose a taskbar button label as "<glyph> <text>".
@@ -54,11 +53,6 @@ void Taskbar::draw() {
 		rowTop + (buttonHeight - ImGui::GetTextLineHeight()) * 0.5f;
 
 	ImGui::SetCursorPosY(rowTop);
-
-	if (ImGui::Button(iconLabel(kIconStart, "Start").c_str(),
-					  ImVec2(60, buttonHeight))) {
-	}
-	ImGui::SameLine(0.0f, buttonGap);
 
 	if (ImGui::Button(iconLabel(kIconMail, "CMail").c_str(),
 					  ImVec2(0, buttonHeight))) { // 0 = fit width
