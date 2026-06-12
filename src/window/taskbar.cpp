@@ -2,6 +2,20 @@
 #include "window.hpp"
 #include <ctime>
 
+namespace {
+std::string getCurrentTimeString() {
+	std::time_t t = std::time(nullptr);
+
+	struct tm *tm_info = std::localtime(&t);
+
+	char buffer[std::size("2026-12-31 12:34:56 PM")];
+	std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %I:%M:%S %p", tm_info);
+
+	return std::string(buffer);
+}
+
+} // namespace
+
 Taskbar::Taskbar(std::function<void()> onPowerClick)
 	: Window("Taskbar",
 			 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
@@ -9,17 +23,6 @@ Taskbar::Taskbar(std::function<void()> onPowerClick)
 				 ImGuiWindowFlags_NoSavedSettings |
 				 ImGuiWindowFlags_NoScrollbar),
 	  m_onPowerClick(std::move(onPowerClick)) {}
-
-std::string GetCurrentTimeString() {
-	std::time_t t = std::time(nullptr);
-
-	struct tm *tm_info = std::localtime(&t);
-
-	char buffer[16];
-	std::strftime(buffer, sizeof(buffer), "%H:%M:%S %p", tm_info);
-
-	return std::string(buffer);
-}
 
 void Taskbar::draw() {
 	constexpr float buttonHeight = 24.0f;
@@ -65,7 +68,7 @@ void Taskbar::draw() {
 	// Power button pinned to the right with clock to its left
 	const float powerButtonX = windowWidth - powerButtonWidth - edgePadding;
 
-	std::string timeStr = GetCurrentTimeString();
+	std::string timeStr = getCurrentTimeString();
 	float textWidth = ImGui::CalcTextSize(timeStr.c_str()).x;
 
 	ImGui::SameLine();
