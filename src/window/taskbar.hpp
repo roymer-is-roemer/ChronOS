@@ -5,6 +5,7 @@
 #include <memory>
 #include "task_manager.hpp"
 #include "power_manager.hpp"
+#include "mail.hpp"
 
 class Taskbar : public Window {
 private:
@@ -12,6 +13,7 @@ private:
     bool m_showPowerConfirm = false;
     std::unique_ptr<TaskManager> m_taskManager;
     std::unique_ptr<PowerManager> m_powerManager;
+    std::unique_ptr<Mail> m_mail;
 public:
 	void draw() override;
 	ImVec2 position() override;

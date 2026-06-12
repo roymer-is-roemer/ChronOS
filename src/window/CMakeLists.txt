@@ -4,6 +4,7 @@ target_sources(OSMockup PRIVATE
     desktop_background.cpp
     task_manager.cpp
     power_manager.cpp
+    mail.cpp
 )
 
 target_include_directories(OSMockup PRIVATE

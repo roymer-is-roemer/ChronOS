@@ -46,7 +46,11 @@ void Taskbar::draw() {
 	}
 	ImGui::SameLine(0.0f, buttonGap);
 
-	if (ImGui::Button(" Mail", ImVec2(0, buttonHeight))) { // 0 = fit width
+	if (ImGui::Button(" CMail", ImVec2(0, buttonHeight))) { // 0 = fit width
+		if (!m_mail) {
+			m_mail = std::make_unique<Mail>();
+		}
+		m_mail->open();
 	}
 	ImGui::SameLine(0.0f, buttonGap);
 
@@ -125,6 +129,10 @@ void Taskbar::draw() {
 
 	if (m_powerManager) {
 		m_powerManager->draw();
+	}
+
+	if (m_mail) {
+		m_mail->draw();
 	}
 }
 
