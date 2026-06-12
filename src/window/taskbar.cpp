@@ -3,6 +3,19 @@
 #include <ctime>
 
 namespace {
+
+// --- Nerd Font glyphs ---
+constexpr const char *kIconStart = "";			  // start menu
+constexpr const char *kIconMail = "";			  // envelope
+constexpr const char *kIconPowerManager = "󱊣"; // power plug
+constexpr const char *kIconTaskManager = "";	  // gauge
+constexpr const char *kIconPower = "󰐥";		  // power button
+
+// Compose a taskbar button label as "<glyph> <text>".
+std::string iconLabel(const char *icon, const char *label) {
+	return std::string(icon) + " " + label;
+}
+
 std::string getCurrentTimeString() {
 	std::time_t t = std::time(nullptr);
 
@@ -42,11 +55,13 @@ void Taskbar::draw() {
 
 	ImGui::SetCursorPosY(rowTop);
 
-	if (ImGui::Button(" Start", ImVec2(60, buttonHeight))) {
+	if (ImGui::Button(iconLabel(kIconStart, "Start").c_str(),
+					  ImVec2(60, buttonHeight))) {
 	}
 	ImGui::SameLine(0.0f, buttonGap);
 
-	if (ImGui::Button(" CMail", ImVec2(0, buttonHeight))) { // 0 = fit width
+	if (ImGui::Button(iconLabel(kIconMail, "CMail").c_str(),
+					  ImVec2(0, buttonHeight))) { // 0 = fit width
 		if (!m_mail) {
 			m_mail = std::make_unique<Mail>();
 		}
@@ -54,7 +69,8 @@ void Taskbar::draw() {
 	}
 	ImGui::SameLine(0.0f, buttonGap);
 
-	if (ImGui::Button("󱊣 Power Manager", ImVec2(0, buttonHeight))) {
+	if (ImGui::Button(iconLabel(kIconPowerManager, "Power Manager").c_str(),
+					  ImVec2(0, buttonHeight))) {
 		if (!m_powerManager) {
 			m_powerManager = std::make_unique<PowerManager>();
 		}
@@ -62,7 +78,8 @@ void Taskbar::draw() {
 	}
 	ImGui::SameLine(0.0f, buttonGap);
 
-	if (ImGui::Button(" Task Manager", ImVec2(0, buttonHeight))) {
+	if (ImGui::Button(iconLabel(kIconTaskManager, "Task Manager").c_str(),
+					  ImVec2(0, buttonHeight))) {
 		if (!m_taskManager) {
 			m_taskManager = std::make_unique<TaskManager>();
 		}
@@ -88,7 +105,7 @@ void Taskbar::draw() {
 						  ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive,
 						  ImVec4(1.0f, 0.3f, 0.3f, 1.0f));
-	if (ImGui::Button("󰐥", ImVec2(26.0f, 24))) {
+	if (ImGui::Button(kIconPower, ImVec2(26.0f, 24))) {
 		m_showPowerConfirm = true;
 		ImGui::OpenPopup("Confirm Shutdown");
 	}
