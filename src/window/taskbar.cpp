@@ -36,8 +36,13 @@ void Taskbar::draw() {
 	}
 	ImGui::SameLine();
 
-	if (ImGui::Button("Button 3", ImVec2(36, 36))) {
-	}
+    if (ImGui::Button("TskMngr", ImVec2(36, 36))) {
+        if (!m_taskManager) {
+            m_taskManager = std::make_unique<TaskManager>();
+        }
+        m_taskManager->open();
+    }
+    ImGui::SameLine();
 
 	std::string timeStr = GetCurrentTimeString();
 	float text_width = ImGui::CalcTextSize(timeStr.c_str()).x;
@@ -86,6 +91,10 @@ void Taskbar::draw() {
 
         ImGui::EndPopup();
     }
+
+    if (m_taskManager) {
+    m_taskManager->draw();
+}
 }
 
 ImVec2 Taskbar::position() {
