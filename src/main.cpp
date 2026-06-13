@@ -5,14 +5,20 @@
 #include "window/desktop_background.hpp"
 #include "window/taskbar.hpp"
 #include <GLFW/glfw3.h>
+#include <chrono>
 #include <ctime>
+#include <fstream>
+#include <iostream>
 #include <string>
+#include <thread>
 
 void setupFont();
+void displayBootLogo();
 
 int main() {
 	// ImGuiIO &io = ImGui::GetIO();
 	//(void)io;
+	displayBootLogo();
 
 	OSWindow window;
 
@@ -29,22 +35,6 @@ int main() {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-
-		ImDrawList *bg_draw_list = ImGui::GetBackgroundDrawList();
-
-		ImVec2 screen_pos = ImGui::GetMainViewport()->Pos;
-		ImVec2 screen_size = ImGui::GetMainViewport()->Size;
-
-		// ImU32 color_top_left = ImGui::ColorConvertFloat4ToU32(ImVec4(0.1f,
-		// 0.2f, 0.3f, 1.0f));  // Dark Blue ImU32 color_bot_right =
-		// ImGui::ColorConvertFloat4ToU32(ImVec4(0.2f, 0.1f, 0.2f, 1.0f)); //
-		// Dark Purple
-
-		// bg_draw_list->AddRectFilledMultiColor(
-		//     screen_pos,
-		//     ImVec2(screen_pos.x + screen_size.x, screen_pos.y +
-		//     screen_size.y), color_top_left, color_top_left, color_bot_right,
-		//     color_bot_right);
 
 		desktop_background.render();
 		taskbar.render();
@@ -75,4 +65,15 @@ void setupFont() {
 	};
 	io.Fonts->AddFontFromFileTTF("assets/MonacoNerdFont-Regular.ttf", 16.0f,
 								 nullptr, ranges);
+}
+
+void displayBootLogo() {
+	std::ifstream file("assets/boot.txt");
+	if (file) {
+		std::cout << file.rdbuf() << std::endl;
+	} else {
+		std::cerr << "Could not open assets/boot.txt" << std::endl;
+	}
+
+	std::this_thread::sleep_for(std::chrono::seconds(5));
 }
